@@ -1,0 +1,62 @@
+ext {
+
+    android = [
+            minSdkVersion    : 21,
+            targetSdkVersion : 28,
+            compileSdkVersion: 28,
+            buildToolsVersion: '28.0.3',
+    ]
+
+    def dependVersion = [
+            androidXVersion  : '1.0.0',
+            okhttpVersion    : "3.12.1",
+            retrofitVersion  : "2.2.0",
+            rxjavaVersion    : '2.2.13',
+            rxandroidVersion : '2.1.1',
+            gsonVersion      : '2.8.5',
+            leakcanaryVersion: "2.3",
+    ]
+
+    dependencies = [
+            //base
+            "material-design"            : "com.google.android.material:material:1.0.0",
+            "appcompat"                  : "androidx.appcompat:appcompat:${dependVersion.androidXVersion}",
+            "recyclerview"               : "androidx.recyclerview:recyclerview:${dependVersion.androidXVersion}",
+            "support"                    : "androidx.legacy:legacy-support-v4:${dependVersion.androidXVersion}",
+            "cardview"                   : "androidx.cardview:cardview:${dependVersion.androidXVersion}",
+            "gridlayout"                 : "androidx.gridlayout:gridlayout:${dependVersion.androidXVersion}",
+            "constraintlayout"           : "androidx.constraintlayout:constraintlayout:1.1.2",
+
+            //网络
+            "okhttp3"                    : "com.squareup.okhttp3:okhttp:${dependVersion.okhttpVersion}",
+            "okhttp3-logging-interceptor": "com.squareup.okhttp3:logging-interceptor:${dependVersion.okhttpVersion}",
+            "retrofit2"                  : "com.squareup.retrofit2:retrofit:${dependVersion.retrofitVersion}",//Retrofit2所需要的包
+            "retrofit2-adapter-rxjava2"  : "com.squareup.retrofit2:adapter-rxjava2:${dependVersion.retrofitVersion}",//CallAdapterFactory的Rx依赖包
+            "retrofit2-converter-gson"   : "com.squareup.retrofit2:converter-gson:${dependVersion.retrofitVersion}",//ConverterFactory的Gson依赖包
+            "rxjava2"                    : "io.reactivex.rxjava2:rxjava:${dependVersion.rxjavaVersion}",
+            "rxjava2-rxandroid"          : "io.reactivex.rxjava2:rxandroid:${dependVersion.rxandroidVersion}",
+            "gson"                       : "com.google.code.gson:gson:${dependVersion.gsonVersion}",
+
+
+            //图片加载
+            "glide"                      : "com.github.bumptech.glide:glide:4.12.0",
+            "glide-compiler"             : "com.github.bumptech.glide:compiler:4.12.0",
+            "svga-player"                : "com.github.yyued:SVGAPlayer-Android:2.5.15",
+
+//            //图片处理
+//            "Luban"                      : "top.zibin:Luban:1.1.3",
+//            "PhotoView"                  : "com.github.chrisbanes:PhotoView:2.0.0",
+//
+            //性能优化
+            "blockcanary-android"        : "com.github.moduth:blockcanary-android:${dependVersion.blockcanary}",
+            "blockcanary-no-op"          : "com.github.moduth:blockcanary-no-op:${dependVersion.blockcanary}",
+            "leakcanary-android"         : "com.squareup.leakcanary:leakcanary-android:${dependVersion.leakcanaryVersion}",
+            "leakcanary-android-no-op"   : "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanaryVersion}",
+
+            //甬润科技自己的第三方库
+//            "YR-SelectPic"               : "com.miyue.select.pic:YR-SelectPic:1.0.1@aar",//图片选择库
+//            "YR-SelectPicUCrop"          : "com.miyue.ucrop:YR-SelectPicUCrop:1.0.1@aar",//图片选择库的依赖库
+//            "YR-Router"                  : "com.miyue.router:YR-Router:1.0.0@aar",//路由模块
+
+    ]
+}
