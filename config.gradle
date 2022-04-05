@@ -53,10 +53,5 @@ ext {
             "leakcanary-android"         : "com.squareup.leakcanary:leakcanary-android:${dependVersion.leakcanaryVersion}",
             "leakcanary-android-no-op"   : "com.squareup.leakcanary:leakcanary-android-no-op:${dependVersion.leakcanaryVersion}",
 
-            //甬润科技自己的第三方库
-//            "YR-SelectPic"               : "com.miyue.select.pic:YR-SelectPic:1.0.1@aar",//图片选择库
-//            "YR-SelectPicUCrop"          : "com.miyue.ucrop:YR-SelectPicUCrop:1.0.1@aar",//图片选择库的依赖库
-//            "YR-Router"                  : "com.miyue.router:YR-Router:1.0.0@aar",//路由模块
-
     ]
 }
