@@ -147,7 +147,7 @@ public class ProxyApplication extends Application {
         //获得ActivityThread对象 ActivityThread 可以通过 ContextImpl 的 mMainThread 属性获得
         Field mMainThreadField = contextImplClass.getDeclaredField("mMainThread");
         mMainThreadField.setAccessible(true);
-        Object mMainThread = mMainThreadField.get(baseContext);
+        Object mMainThread = mMainThreadField.get(baseContext);//contextImplClass里面的ActivityThread
 
         //替换 mInitialApplication
         Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
