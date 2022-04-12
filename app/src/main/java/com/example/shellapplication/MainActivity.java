@@ -9,6 +9,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,15 +58,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test03() {
+        Class clazz = null;
         try {
-            Class clazz = Class.forName("android.app.IActivityManager");
+            Log.d(TAG, "-----------------------------------------------");
+            clazz = Class.forName("android.app.IActivityManager");
             Method[] methods = clazz.getMethods();
             for (Method method : methods) {
                 Log.d(TAG, String.valueOf(method));
             }
-
+            Log.d(TAG, "-----------------------------------------------");
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                Log.d(TAG, String.valueOf(field));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
