@@ -26,6 +26,9 @@
             android:value="${applicationId}" />
 
         <activity
+            android:name=".SecoundActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
