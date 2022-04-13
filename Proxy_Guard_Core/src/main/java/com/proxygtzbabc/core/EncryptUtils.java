@@ -9,8 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
  * @time 2021/12/28 11:45
  */
 public class EncryptUtils {
-    private final byte[] KEY = "QUmkLrrISiud6RPU".getBytes(); // 加密使用的key
-    private final byte[] IV = "eh7aJlOdHCNsGNcD".getBytes(); // 偏移值
+    private final byte[] KEY = "179D278870E26DBF".getBytes(); // 加密使用的key
+    private final byte[] IV = "FBD62E078872D971".getBytes(); // 偏移值
     private final String ALGORITHM = "AES/CBC/PKCS5Padding"; // 加密算法
     private Cipher encryptCipher; // 加密
     private Cipher decryptCipher; // 解密
