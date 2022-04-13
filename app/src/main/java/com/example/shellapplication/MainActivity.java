@@ -1,79 +1,80 @@
 package com.example.shellapplication;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.example.shellapplication.media.RawUtil;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.IOException;
 
-    public static String TAG = "MainActivity==========";
+public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+    public static String TAG = "MediaPlayActivity==========";
+
+    private MainActivity mActivity;
+    private SurfaceView mSurfaceView;
+    MediaPlayer mPlayer;
+    boolean mIsInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivity = this;
         setContentView(R.layout.activity_main);
-//        mParent = null;
-        findViewById(R.id.btn_to_second).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                test03();
-            }
-        });
+        mSurfaceView = findViewById(R.id.surface_view);
+    }
 
-        ClassLoader classLoader = getClassLoader();
-        while (classLoader != null) {
-            Log.d(TAG, String.valueOf(classLoader));
-            classLoader = classLoader.getParent();
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!mIsInit) {
+            mIsInit = true;
+            try {
+                AssetFileDescriptor afd = RawUtil.getRawResFile(mActivity, R.raw.base_login_bg, "base_login_bg");
+                mPlayer = new MediaPlayer();
+                final AudioAttributes aa = new AudioAttributes.Builder().build();
+                mPlayer.setAudioAttributes(aa);
+                mPlayer.setAudioSessionId(0);
+                mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                mPlayer.setLooping(true);
+                mPlayer.prepare();
+                mPlayer.setDisplay(mSurfaceView.getHolder());
+                mPlayer.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void test01() {
-        Intent intent = new Intent(MainActivity.this, SecoundActivity.class);
-        intent.setClass(MainActivity.this, SecoundActivity.class);
-        String className = SecoundActivity.class.getName();
-        intent.setClassName(getPackageName(), className);
-        Activity activity = getParent();
-        System.out.println(activity);
-        startActivity(intent);
-    }
-
-    public void test02() {
-        try {
-            Class<ActivityManager> clazz = ActivityManager.class;
-            Method method_IActivityManager = clazz.getDeclaredMethod("getService");
-            method_IActivityManager.setAccessible(true);
-            Object object = method_IActivityManager.invoke(null);
-            Log.d(TAG, String.valueOf(object));//android.app.IActivityManager$Stub$Proxy@6c215ac
-        } catch (Exception e) {
-            e.printStackTrace();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPlayer != null) {
+            mPlayer.stop();
         }
     }
 
-    public void test03() {
-        Class clazz = null;
-        try {
-            Log.d(TAG, "-----------------------------------------------");
-            clazz = Class.forName("android.app.IActivityManager");
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                Log.d(TAG, String.valueOf(method));
-            }
-            Log.d(TAG, "-----------------------------------------------");
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                Log.d(TAG, String.valueOf(field));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        if (mPlayer != null) {
+            mPlayer.start();
         }
+    }
 
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if (mPlayer != null) {
+            mPlayer.stop();
+        }
     }
 }

@@ -1,7 +1,55 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id 'com.android.application' version '7.1.2' apply false
-    id 'com.android.library' version '7.1.2' apply false
+buildscript {
+
+    ext.kotlin_version = '1.3.10'
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        // 友盟sdk新maven仓库地址
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {
+//            url 'http://60.12.214.146:8880/repository/miyue-releases/'
+            url 'http://nex.yonrun.com:8880/repository/miyue-releases/'
+            credentials {
+                username 'admin'
+                password 'admin123'
+            }
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions: 0.8.2"
+        //资源名称加密
+        classpath 'com.tencent.mm:AndResGuard-gradle-plugin:1.2.17'
+        //字符串加密插件
+//        classpath "com.yr.strplugin:str-encry-plugin:1.0.1"
+        classpath 'io.github.didi.dokit:dokitx-plugin:3.5.0.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'http://developer.huawei.com/repo/' }
+        //maven { url 'https://dl.bintray.com/albertlii/android-maven/' }
+        maven {
+//            url 'http://60.12.214.146:8880/repository/miyue-releases/'
+            url 'http://nex.yonrun.com:8880/repository/miyue-releases/'
+            credentials {
+                username 'admin'
+                password 'admin123'
+            }
+        }
+        // 友盟sdk新maven仓库地址
+        maven { url 'https://repo1.maven.org/maven2/' }
+    }
 }
 
 task clean(type: Delete) {
