@@ -1,17 +1,21 @@
 package com.example.shellapplication;
 
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.shellapplication.media.RawUtil;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     public static String TAG = "MediaPlayActivity==========";
@@ -34,6 +38,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onWindowFocusChanged(hasFocus);
         if (!mIsInit) {
             mIsInit = true;
+            try {
+                InputStream inputStream = getAssets().open("img.png");
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                ImageView iv = findViewById(R.id.iv_img);
+                iv.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             try {
                 AssetFileDescriptor afd = RawUtil.getRawResFile(mActivity, R.raw.base_login_bg, "base_login_bg");
                 mPlayer = new MediaPlayer();

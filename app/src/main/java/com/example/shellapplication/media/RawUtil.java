@@ -21,12 +21,12 @@ public class RawUtil {
      */
     public static AssetFileDescriptor getRawResFile(Context context, int fileResId, String fileResName) {
         //不存在缓存则正常获取
-//        try {
-//            return context.getResources().openRawResourceFd(fileResId);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.e("jiagu", fileResId + " 读取异常!，尝试拷贝读取...");
-//        }
+        try {
+            return context.getResources().openRawResourceFd(fileResId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("jiagu", fileResId + " 读取异常!，尝试拷贝读取...");
+        }
         File cacheFile = new File(context.getCacheDir(), fileResName);
         try {
             //先判断是否存在缓存
