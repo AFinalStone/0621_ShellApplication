@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.apache.commons:commons-compress:1.18'
-    implementation 'org.tukaani:xz:1.8'
+    implementation 'org.apache.commons:commons-compress:1.21'
+    implementation 'org.tukaani:xz:1.9'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

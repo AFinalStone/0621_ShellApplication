@@ -3,19 +3,52 @@ plugins {
 }
 
 android {
-    compileSdk 28
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.example.shellapplication"
-        minSdk 23
-        targetSdk 28
+        minSdkVersion 23
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
+        manifestPlaceholders = [VERSION_NAME: "'1.0.0'"]
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "default"
+
     }
-    buildTypes {
+
+
+    //多渠道打包
+    productFlavors {
+        jiagu {//加固包
+            applicationId "com.gtzbabc.live"
+        }
+    }
+
+    signingConfigs {
         release {
-            minifyEnabled false
+            // 签名文件放到工程app目录下
+            storeFile file('signature/gtzbabc.jks')
+            storePassword "yeyan123"
+            keyAlias "yeyan"
+            keyPassword "yeyan123"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+            minifyEnabled false // 是否混淆
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard/proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.release
+            shrinkResources false
+            minifyEnabled false // 是否混淆
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -29,5 +62,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation project(path: ':Proxy_Guard_Core')
 }

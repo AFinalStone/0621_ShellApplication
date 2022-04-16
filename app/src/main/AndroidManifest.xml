@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.shellapplication">
 
+
     <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
+        android:name=".ProxyApplication"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".SecoundActivity"
-            android:exported="false" />
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup, android:label">
+        <meta-data
+            android:name="app_name"
+            android:value="com.example.shellapplication.MyApplication" />
+        <meta-data
+            android:name="app_version"
+            android:value="${VERSION_NAME}" />
+        <meta-data
+            android:name="app_package"
+            android:value="${applicationId}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -22,6 +34,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".second.SecondActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
