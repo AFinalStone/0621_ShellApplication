@@ -1,0 +1,17 @@
+<resources>
+
+    <style name="A_UikitAppTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+
+    <!--透明activity-->
+    <style name="A_UikitTranslucentThemeActivity" parent="A_UikitAppTheme">
+        <item name="android:windowBackground">@color/A_transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
+    <!--带有暗色背景的透明activity-->
+    <style name="A_UikitTranslucentThemeActivity.DarkBackground" parent="A_UikitTranslucentThemeActivity">
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+</resources>

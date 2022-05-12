@@ -3,14 +3,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         applicationId "com.example.shellapplication"
-        minSdkVersion 23
-        //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
         manifestPlaceholders = [VERSION_NAME: "'1.0.0'"]
@@ -62,5 +61,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation project(path: ':Proxy_Guard_Core')
+    implementation project(path: ':Proxy_Guard_Dex')
 }

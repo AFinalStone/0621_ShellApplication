@@ -9,14 +9,12 @@ import java.io.RandomAccessFile;
  * @author syl
  * @time 2021/12/28 14:38
  */
-public class Main {
+public class Main_Res {
     public static String channel = "jiagu";  //  有qlbf,mixinzhibo,mixin,guotang 可以选择
     public static String SIGN_FINE_NAME = "gtzbabc";  //
 
     public static String destPath = "app/" + channel + "/debug";
     public static String FILENAME = destPath + "/app-" + channel + "-debug";
-    // resGuard混淆后的包文件位置
-//    public static String resguardReleasePath = "app/build/outputs/apk/" + channel + "/release/AndResGuard_app-" + channel + "-release/app-" + channel + "-release_7zip_aligned_signed.apk";
 
     public static void main(String[] args) throws Exception {
         // 复制resGuard混淆后的apk包 复制到指定的位置
@@ -25,51 +23,43 @@ public class Main {
          * 1、制作只包含解密代码的dex 文件
          */
         //1.1 解压aar 获得classes.jar
-        File aarFile = new File("Proxy_Guard_Core/build/outputs/aar/Proxy_Guard_Core-release.aar");
-        File aarTemp = new File("Proxy_Guard_Tools/temp");
-        Zip.unZipApk(aarFile, aarTemp);
-        File classesJar = new File(aarTemp, "classes.jar");
-        //1.2 执行dx命令 将jar变成dex文件
-        File classesDex = new File(aarTemp, "classes.dex");
-        Process process = Runtime.getRuntime().exec("cmd /c dx --dex --output " + classesDex
-                .getAbsolutePath() + " " +
-                classesJar.getAbsolutePath());
-        process.waitFor();
-        //失败
-        if (process.exitValue() != 0) {
-            throw new RuntimeException("dex error");
-        }
+        File arscFile = new File("Proxy_Guard_Resource/build/outputs/apk/release/Proxy_Guard_Resource-release.apk");
+        File arscTempRes = new File("Proxy_Guard_Tools/temp_res");
+        Zip.unZipApk(arscFile, arscTempRes);
 
         /**
-         * 2、加密apk中所有dex文件
+         * 2、加密apk中所有的zip文件
          */
         File apkFile = new File(FILENAME + ".apk");
         File apkTemp = new File("app/build/outputs/apk/temp");
-        Zip.unZipApk(apkFile, apkTemp);
-        File[] dexFiles = apkTemp.listFiles(new FilenameFilter() {
+//        Zip.unZip(apkFile, apkTemp);
+        //压缩apk中的zip文件
+        File[] resFiles = apkTemp.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
-                return s.endsWith(".dex");
+                return s.endsWith(".zip");
             }
         });
-        File fileDexZip = new File("app/build/outputs/apk/temp/classes.zip");
-        Zip.zip(dexFiles, fileDexZip);
-        for (File dex : dexFiles) {
-            dex.delete();
+        if (resFiles != null) {
+            for (File res : resFiles) {
+                byte[] bytes = getBytes(res);
+                byte[] encrypt = EncryptUtils.getInstance().encrypt(bytes);
+                String childFileName = res.getName().replace("zip", "piz");
+                FileOutputStream fos = new FileOutputStream(new File(apkTemp, childFileName));
+                fos.write(encrypt);
+                fos.flush();
+                fos.close();
+                res.delete();
+            }
         }
-        byte[] bytes = getBytes(fileDexZip);
-        byte[] encrypt = EncryptUtils.getInstance().encrypt(bytes);
-        FileOutputStream fos = new FileOutputStream(new File(apkTemp, fileDexZip.getName().replace("zip", "piz")));
-        fos.write(encrypt);
-        fos.flush();
-        fos.close();
-        fileDexZip.delete();
 
-
-        /**
-         * 3、把classes.dex 放入 apk解压目录 在压缩成apk
-         */
-        classesDex.renameTo(new File(apkTemp, "classes.dex"));
+//        /**
+//         * 3、替换reouces.arsc
+//         */
+//        File apkResArsc = new File(apkTemp, "resources.arsc");
+//        File resArsc = new File(arscTempRes, "resources.arsc");
+//        apkResArsc.delete();
+//        resArsc.renameTo(apkResArsc);
         File unSignedApk = new File("app/build/outputs/apk/app-unsigned.apk");
         Zip.zip(apkTemp, unSignedApk);
 
@@ -77,7 +67,7 @@ public class Main {
          * 4、对齐与签名
          */
         File alignedApk = new File("app/build/outputs/apk/app-unsigned-aligned.apk");
-        process = Runtime.getRuntime().exec("cmd /c zipalign -f 4 " + unSignedApk
+        Process process = Runtime.getRuntime().exec("cmd /c zipalign -f 4 " + unSignedApk
                 .getAbsolutePath() + " " +
                 alignedApk.getAbsolutePath());
         process.waitFor();
