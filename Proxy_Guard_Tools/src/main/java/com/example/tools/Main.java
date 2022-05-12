@@ -27,7 +27,7 @@ public class Main {
         //1.1 解压aar 获得classes.jar
         File aarFile = new File("Proxy_Guard_Core/build/outputs/aar/Proxy_Guard_Core-release.aar");
         File aarTemp = new File("Proxy_Guard_Tools/temp");
-        Zip.unZip(aarFile, aarTemp);
+        Zip.unZipApk(aarFile, aarTemp);
         File classesJar = new File(aarTemp, "classes.jar");
         //1.2 执行dx命令 将jar变成dex文件
         File classesDex = new File(aarTemp, "classes.dex");
@@ -45,35 +45,26 @@ public class Main {
          */
         File apkFile = new File(FILENAME + ".apk");
         File apkTemp = new File("app/build/outputs/apk/temp");
-        Zip.unZip(apkFile, apkTemp);
+        Zip.unZipApk(apkFile, apkTemp);
         File[] dexFiles = apkTemp.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
                 return s.endsWith(".dex");
             }
         });
-//        File newClassDecryptFileDir = new File(apkTemp, "xed");
-//        for (File dex : dexFiles) {
-//            if (!newClassDecryptFileDir.exists()) {
-//                newClassDecryptFileDir.mkdirs();
-//            }
-//            dex.renameTo(new File(newClassDecryptFileDir, dex.getName()));
-//            dex.delete();
-//        }
-//        Zip.zip(newClassDecryptFileDir, new File(apkTemp, "xed.xed"));
-//        for (File file : newClassDecryptFileDir.listFiles()) {
-//            file.delete();
-//        }
-//        newClassDecryptFileDir.delete();
+        File fileDexZip = new File("app/build/outputs/apk/temp/classes.zip");
+        Zip.zip(dexFiles, fileDexZip);
         for (File dex : dexFiles) {
-            byte[] bytes = getBytes(dex);
-            byte[] encrypt = EncryptUtils.getInstance().encrypt(bytes);
-            FileOutputStream fos = new FileOutputStream(new File(apkTemp, SIGN_FINE_NAME + dex.getName().replace("dex", "xed")));
-            fos.write(encrypt);
-            fos.flush();
-            fos.close();
             dex.delete();
         }
+        byte[] bytes = getBytes(fileDexZip);
+        byte[] encrypt = EncryptUtils.getInstance().encrypt(bytes);
+        FileOutputStream fos = new FileOutputStream(new File(apkTemp, fileDexZip.getName().replace("zip", "piz")));
+        fos.write(encrypt);
+        fos.flush();
+        fos.close();
+        fileDexZip.delete();
+
 
         /**
          * 3、把classes.dex 放入 apk解压目录 在压缩成apk

@@ -3,6 +3,7 @@ package com.example.tools;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.CRC32;
@@ -28,14 +29,55 @@ public class Zip {
         }
     }
 
-
     /**
      * 解压zip文件至dir目录
      *
      * @param zip
      * @param dir
      */
-    public static void unZip(File zip, File dir) {
+    public static void unZipFile(File zip, File dir, String endWithName) {
+        try {
+            deleteFile(dir);
+            ZipFile zipFile = new ZipFile(zip);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry zipEntry = entries.nextElement();
+                String name = zipEntry.getName();
+                if (name.endsWith(endWithName)) {
+                    System.out.println("ProxyApplication===============unZip_name= " + name);
+                    if (!zipEntry.isDirectory()) {
+                        File file = new File(dir, name);
+                        //创建目录
+                        if (!file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
+                        //写文件
+                        FileOutputStream fos = new FileOutputStream(file);
+                        InputStream is = zipFile.getInputStream(zipEntry);
+                        byte[] buffer = new byte[2048];
+                        int len;
+                        while ((len = is.read(buffer)) != -1) {
+                            fos.write(buffer, 0, len);
+                        }
+                        is.close();
+                        fos.close();
+                    }
+                }
+
+            }
+            zipFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 解压apk文件至dir目录
+     *
+     * @param zip
+     * @param dir
+     */
+    public static void unZipApk(File zip, File dir) {
         try {
             deleteFile(dir);
             ZipFile zipFile = new ZipFile(zip);
@@ -77,6 +119,44 @@ public class Zip {
     }
 
     /**
+     * 压缩多个文件为zip
+     *
+     * @param fileList 待压缩文件列表
+     * @param zipFile  输出的zip文件
+     * @throws Exception
+     */
+    public static int zip(File[] fileList, File zipFile) throws IOException {
+        zipFile.delete();
+        zipFile.createNewFile();
+        // 对输出文件做CRC32校验
+        int fileCount = 0;//记录压缩了几个文件？
+        CheckedOutputStream cos = new CheckedOutputStream(new FileOutputStream(zipFile), new CRC32());
+        ZipOutputStream zos = new ZipOutputStream(cos);
+        //压缩
+        for (File file : fileList) {
+            if (file == null || !file.exists()) {
+                continue;
+            }
+            //添加一个zip条目
+            ZipEntry entry = new ZipEntry(file.getName());
+            zos.putNextEntry(entry);
+            //读取条目输出到zip中
+            FileInputStream fis = new FileInputStream(file);
+            int len;
+            byte data[] = new byte[2048];
+            while ((len = fis.read(data, 0, 2048)) != -1) {
+                zos.write(data, 0, len);
+            }
+            fis.close();
+            zos.closeEntry();
+            fileCount++;
+        }
+        zos.flush();
+        zos.close();
+        return fileCount;
+    }
+
+    /**
      * 压缩目录为zip
      *
      * @param dir 待压缩目录
@@ -94,6 +174,7 @@ public class Zip {
         zos.flush();
         zos.close();
     }
+
 
     /**
      * 添加目录/文件 至zip中

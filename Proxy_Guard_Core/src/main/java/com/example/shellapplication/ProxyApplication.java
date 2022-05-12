@@ -5,18 +5,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 
-import com.example.core.R;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -53,44 +49,34 @@ public class ProxyApplication extends Application {
         File dexDir = new File(versionDir, "dexDir");
         List<File> dexFilesList = new ArrayList<>();
         if (!dexDir.exists() || dexDir.list().length == 0) {
-            Zip.unZip(apkFile, versionDir);
+            Zip.unZipFile(apkFile, versionDir, ".piz");
             File[] files = versionDir.listFiles();
             if (files != null && files.length > 0)
                 for (File file : files) {
                     String name = file.getName();
-                    if (name.endsWith(".xed")) {
+                    if (name.endsWith(".piz")) {
                         try {
                             byte[] bytes = Utils.getBytes(file);
                             byte[] decrypt = EncryptUtils.getInstance().decrypt(bytes);
-                            if (!dexDir.exists()) {
-                                dexDir.mkdirs();
-                            }
-                            File fileDex = new File(dexDir, file.getName());
-                            FileOutputStream fos = new FileOutputStream(fileDex);
+                            File fileDexZip = new File(versionDir, file.getName().replace("piz", "zip"));
+                            FileOutputStream fos = new FileOutputStream(fileDexZip);
                             fos.write(decrypt);
                             fos.flush();
                             fos.close();
-                            dexFilesList.add(fileDex);
+                            Zip.unZipFile(fileDexZip, dexDir, ".dex");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
-        } else {
-            //已经解密过了
+        }
+        try {
+            //解密
             for (File file : dexDir.listFiles()) {
                 dexFilesList.add(file);
             }
-        }
-        try {
             loadDex(dexFilesList, versionDir);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -113,7 +99,7 @@ public class ProxyApplication extends Application {
     }
 
     boolean isBindReal;
-    Application realDelegate;
+    Application delegate;
 
     public void bindRealApplication() throws Exception {
         if (isBindReal) {
@@ -127,12 +113,12 @@ public class ProxyApplication extends Application {
         Context baseContext = getBaseContext();
         //反射创建出真实的 用户 配置的Application
         Class<?> delegateClass = Class.forName(app_name);
-        realDelegate = (Application) delegateClass.newInstance();
-        //得到 Application attach() 方法 也就是最先初始化的
+        delegate = (Application) delegateClass.newInstance();
+        //反射获得 attach函数
         Method attach = Application.class.getDeclaredMethod("attach", Context.class);
+        //设置允许访问
         attach.setAccessible(true);
-        //执行 Application#attach(Context)
-        attach.invoke(realDelegate, baseContext);
+        attach.invoke(delegate, baseContext);
 
         /**
          *  替换
@@ -142,61 +128,53 @@ public class ProxyApplication extends Application {
         //获得 mOuterContext 属性
         Field mOuterContextField = contextImplClass.getDeclaredField("mOuterContext");
         mOuterContextField.setAccessible(true);
-        //将真实的 Application 交于 Context 中。这个根据源码执行，实例化 Application 下一个就行调用 setOuterContext 函数，所以需要绑定 Context
-        mOuterContextField.set(baseContext, realDelegate);
+        mOuterContextField.set(baseContext, delegate);
 
 
         /**
          * ActivityThread  mAllApplications 与 mInitialApplication
          */
-        ////拿到 ActivityThread 变量
+        //获得ActivityThread对象 ActivityThread 可以通过 ContextImpl 的 mMainThread 属性获得
         Field mMainThreadField = contextImplClass.getDeclaredField("mMainThread");
         mMainThreadField.setAccessible(true);
-        //拿到 ActivityThread 对象
         Object mMainThread = mMainThreadField.get(baseContext);
 
-        //反射拿到 ActivityThread class
+        //替换 mInitialApplication
         Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-        //得到当前加载的 壳Application 类
-        Field mInitialApplicationField = activityThreadClass.getDeclaredField("mInitialApplication");
+        Field mInitialApplicationField = activityThreadClass.getDeclaredField
+                ("mInitialApplication");
         mInitialApplicationField.setAccessible(true);
-        // 将 ActivityThread 中的 Application 替换为 真实的 Application 可以用于接收相应的声明周期和一些调用等
-        mInitialApplicationField.set(mMainThread, realDelegate);
+        mInitialApplicationField.set(mMainThread, delegate);
 
-        //拿到 ActivityThread 中所有的 Application 集合对象，这里是多进程的场景
-        Field mAllApplicationsField = activityThreadClass.getDeclaredField("mAllApplications");
+        //替换 mAllApplications
+        Field mAllApplicationsField = activityThreadClass.getDeclaredField
+                ("mAllApplications");
         mAllApplicationsField.setAccessible(true);
         ArrayList<Application> mAllApplications = (ArrayList<Application>) mAllApplicationsField.get(mMainThread);
-        //删除 ProxyApplication
         mAllApplications.remove(this);
-        //7.2 添加真实的 Application
-        mAllApplications.add(realDelegate);
+        mAllApplications.add(delegate);
 
 
         /**
          * LoadedApk -> mApplication ProxyApplication
          */
-        //8. 从 ContextImpl 拿到类型为LoadedApk的mPackageInfo 变量
+        //LoadedApk 可以通过 ContextImpl 的 mPackageInfo 属性获得
         Field mPackageInfoField = contextImplClass.getDeclaredField("mPackageInfo");
         mPackageInfoField.setAccessible(true);
-        //8.1 拿到 LoadedApk 对象
         Object mPackageInfo = mPackageInfoField.get(baseContext);
 
         Class<?> loadedApkClass = Class.forName("android.app.LoadedApk");
         Field mApplicationField = loadedApkClass.getDeclaredField("mApplication");
         mApplicationField.setAccessible(true);
-        //9.1 将LoadedApk中的 Application 替换为 真实的 Application
-        mApplicationField.set(mPackageInfo, realDelegate);
+        mApplicationField.set(mPackageInfo, delegate);
 
-        //10. 拿到 LoadApk 中的 mApplicationInfo 变量
+        //修改ApplicationInfo className LoadedApk
         Field mApplicationInfoField = loadedApkClass.getDeclaredField("mApplicationInfo");
         mApplicationInfoField.setAccessible(true);
-        //10.1 根据变量反射得到 ApplicationInfo 对象
         ApplicationInfo mApplicationInfo = (ApplicationInfo) mApplicationInfoField.get(mPackageInfo);
-        //10.2 将我们真实的 APPlication ClassName 名称赋值于它
         mApplicationInfo.className = app_name;
 
-        realDelegate.onCreate();
+        delegate.onCreate();
         isBindReal = true;
     }
 
@@ -221,7 +199,7 @@ public class ProxyApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return realDelegate;
+        return delegate;
     }
 
 

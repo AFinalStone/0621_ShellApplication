@@ -29,30 +29,13 @@ public class Zip {
         }
     }
 
-    public static void copyFile(File sourceFile, File dirFile) throws IOException {
-        //创建目录
-        if (!dirFile.getParentFile().exists()) {
-            dirFile.getParentFile().mkdirs();
-        }
-        //写文件
-        FileOutputStream fos = new FileOutputStream(dirFile);
-        InputStream is = new FileInputStream(sourceFile);
-        byte[] buffer = new byte[2048];
-        int len;
-        while ((len = is.read(buffer)) != -1) {
-            fos.write(buffer, 0, len);
-        }
-        is.close();
-        fos.close();
-    }
-
     /**
      * 解压zip文件至dir目录
      *
      * @param zip
      * @param dir
      */
-    public static void unZip(File zip, File dir) {
+    public static void unZipFile(File zip, File dir, String endWithName) {
         try {
             deleteFile(dir);
             ZipFile zipFile = new ZipFile(zip);
@@ -60,8 +43,7 @@ public class Zip {
             while (entries.hasMoreElements()) {
                 ZipEntry zipEntry = entries.nextElement();
                 String name = zipEntry.getName();
-//                if (name.endsWith(".xed") || name.contains("res/raw/")) {
-                if (name.endsWith(".xed")) {
+                if (name.endsWith(endWithName)) {
                     System.out.println("ProxyApplication===============unZip_name= " + name);
                     if (!zipEntry.isDirectory()) {
                         File file = new File(dir, name);
@@ -90,6 +72,91 @@ public class Zip {
     }
 
     /**
+     * 解压apk文件至dir目录
+     *
+     * @param zip
+     * @param dir
+     */
+    public static void unZipApk(File zip, File dir) {
+        try {
+            deleteFile(dir);
+            ZipFile zipFile = new ZipFile(zip);
+            //zip文件中每一个条目
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            //遍历
+            while (entries.hasMoreElements()) {
+                ZipEntry zipEntry = entries.nextElement();
+                //zip中 文件/目录名
+                String name = zipEntry.getName();
+                //原来的签名文件 不需要了
+                if (name.equals("META-INF/CERT.RSA") || name.equals("META-INF/CERT.SF") || name
+                        .equals("META-INF/MANIFEST.MF")) {
+                    continue;
+                }
+                //空目录不管
+                if (!zipEntry.isDirectory()) {
+                    File file = new File(dir, name);
+                    //创建目录
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
+                    //写文件
+                    FileOutputStream fos = new FileOutputStream(file);
+                    InputStream is = zipFile.getInputStream(zipEntry);
+                    byte[] buffer = new byte[2048];
+                    int len;
+                    while ((len = is.read(buffer)) != -1) {
+                        fos.write(buffer, 0, len);
+                    }
+                    is.close();
+                    fos.close();
+                }
+            }
+            zipFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 压缩多个文件为zip
+     *
+     * @param fileList 待压缩文件列表
+     * @param zipFile  输出的zip文件
+     * @throws Exception
+     */
+    public static int zip(File[] fileList, File zipFile) throws IOException {
+        zipFile.delete();
+        zipFile.createNewFile();
+        // 对输出文件做CRC32校验
+        int fileCount = 0;//记录压缩了几个文件？
+        CheckedOutputStream cos = new CheckedOutputStream(new FileOutputStream(zipFile), new CRC32());
+        ZipOutputStream zos = new ZipOutputStream(cos);
+        //压缩
+        for (File file : fileList) {
+            if (file == null || !file.exists()) {
+                continue;
+            }
+            //添加一个zip条目
+            ZipEntry entry = new ZipEntry(file.getName());
+            zos.putNextEntry(entry);
+            //读取条目输出到zip中
+            FileInputStream fis = new FileInputStream(file);
+            int len;
+            byte data[] = new byte[2048];
+            while ((len = fis.read(data, 0, 2048)) != -1) {
+                zos.write(data, 0, len);
+            }
+            fis.close();
+            zos.closeEntry();
+            fileCount++;
+        }
+        zos.flush();
+        zos.close();
+        return fileCount;
+    }
+
+    /**
      * 压缩目录为zip
      *
      * @param dir 待压缩目录
@@ -107,6 +174,7 @@ public class Zip {
         zos.flush();
         zos.close();
     }
+
 
     /**
      * 添加目录/文件 至zip中
