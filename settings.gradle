@@ -1,4 +1,5 @@
 rootProject.name = "Android0201_Plugin_ShellApplication"
 include ':app'
-include ':Proxy_Guard_Core'
+include ':Proxy_Guard_Dex'
+include ':Proxy_Guard_Resource'
 include ':Proxy_Guard_Tools'

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <anim name="arg" />
+    <animator name="arg" />
+    <array name="arg" />
+    <attr name="arg" />
+    <bool name="arg" />
+    <color name="arg" />
+    <dimen name="arg" />
+    <drawable name="arg" />
+    <font name="agr" />
+    <id name="arg" />
+    <integer name="arg" />
+    <interpolator name="arg" />
+    <layout name="arg" />
+    <menu name="arg" />
+    <mipmap name="arg" />
+    <raw name="arg" />
+    <string name="App_Name">米米米米</string>
+
+    <style name="arg" />
+
+
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--透明-->
+    <color name="A_transparent">#00000000</color>
+</resources>
