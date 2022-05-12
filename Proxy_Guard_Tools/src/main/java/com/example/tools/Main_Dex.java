@@ -13,8 +13,8 @@ public class Main_Dex {
     public static String channel = "jiagu";  //  有qlbf,mixinzhibo,mixin,guotang 可以选择
     public static String SIGN_FINE_NAME = "gtzbabc";  //
 
-    public static String destPath = "app/" + channel + "/debug";
-    public static String FILENAME = destPath + "/app-" + channel + "-debug";
+    public static String destPath = "app/" + channel + "/release";
+    public static String FILENAME = destPath + "/app-" + channel + "-release";
     // resGuard混淆后的包文件位置
 //    public static String resguardReleasePath = "app/build/outputs/apk/" + channel + "/release/AndResGuard_app-" + channel + "-release/app-" + channel + "-release_7zip_aligned_signed.apk";
 
@@ -94,7 +94,7 @@ public class Main_Dex {
         File jks = new File("app/signature/" + SIGN_FINE_NAME + ".jks");
         process = Runtime.getRuntime().exec("cmd /c apksigner sign  --ks " + jks.getAbsolutePath
                 () + " --ks-key-alias yeyan --ks-pass pass:yeyan123 --key-pass  pass:yeyan123 --out" +
-                " " + signedApk.getAbsolutePath() + " " + alignedApk.getAbsolutePath());
+                " " + signedApk.getAbsolutePath() + " " + unSignedApk.getAbsolutePath());
         process.waitFor();
         //失败
         if (process.exitValue() != 0) {
