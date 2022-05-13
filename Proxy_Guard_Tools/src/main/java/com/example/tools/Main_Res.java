@@ -13,8 +13,8 @@ public class Main_Res {
     public static String channel = "jiagu";  //  有qlbf,mixinzhibo,mixin,guotang 可以选择
     public static String SIGN_FINE_NAME = "gtzbabc";  //
 
-    public static String destPath = "app_res/" + channel + "/debug";
-    public static String FILENAME = destPath + "/app-" + channel + "-debug";
+    public static String destPath = "app_dex/" + channel + "/release";
+    public static String FILENAME = destPath + "/app_res-jiagu-release";
 
     public static void main(String[] args) throws Exception {
         // 复制resGuard混淆后的apk包 复制到指定的位置
