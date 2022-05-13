@@ -13,7 +13,7 @@ public class Main_Res {
     public static String channel = "jiagu";  //  有qlbf,mixinzhibo,mixin,guotang 可以选择
     public static String SIGN_FINE_NAME = "gtzbabc";  //
 
-    public static String destPath = "app/" + channel + "/debug";
+    public static String destPath = "app_res/" + channel + "/debug";
     public static String FILENAME = destPath + "/app-" + channel + "-debug";
 
     public static void main(String[] args) throws Exception {
@@ -31,7 +31,7 @@ public class Main_Res {
          * 2、加密apk中所有的zip文件
          */
         File apkFile = new File(FILENAME + ".apk");
-        File apkTemp = new File("app/build/outputs/apk/temp");
+        File apkTemp = new File("app_res/build/outputs/apk/temp");
 //        Zip.unZip(apkFile, apkTemp);
         //压缩apk中的zip文件
         File[] resFiles = apkTemp.listFiles(new FilenameFilter() {
@@ -60,13 +60,13 @@ public class Main_Res {
 //        File resArsc = new File(arscTempRes, "resources.arsc");
 //        apkResArsc.delete();
 //        resArsc.renameTo(apkResArsc);
-        File unSignedApk = new File("app/build/outputs/apk/app-unsigned.apk");
+        File unSignedApk = new File("app_res/build/outputs/apk/app-unsigned.apk");
         Zip.zip(apkTemp, unSignedApk);
 
         /**
          * 4、对齐与签名
          */
-        File alignedApk = new File("app/build/outputs/apk/app-unsigned-aligned.apk");
+        File alignedApk = new File("app_res/build/outputs/apk/app-unsigned-aligned.apk");
         Process process = Runtime.getRuntime().exec("cmd /c zipalign -f 4 " + unSignedApk
                 .getAbsolutePath() + " " +
                 alignedApk.getAbsolutePath());
@@ -81,7 +81,7 @@ public class Main_Res {
 //        apksigner sign  --ks jks文件地址 --ks-key-alias 别名 --ks-pass pass:jsk密码 --key-pass
 // pass:别名密码 --out  out.apk in.apk
         File signedApk = new File(FILENAME + "-signed-aligned.apk");
-        File jks = new File("app/signature/" + SIGN_FINE_NAME + ".jks");
+        File jks = new File("app_res/signature/" + SIGN_FINE_NAME + ".jks");
         process = Runtime.getRuntime().exec("cmd /c apksigner sign  --ks " + jks.getAbsolutePath
                 () + " --ks-key-alias yeyan --ks-pass pass:yeyan123 --key-pass  pass:yeyan123 --out" +
                 " " + signedApk.getAbsolutePath() + " " + alignedApk.getAbsolutePath());

@@ -13,8 +13,8 @@ public class Main_Dex {
     public static String channel = "jiagu";  //  有qlbf,mixinzhibo,mixin,guotang 可以选择
     public static String SIGN_FINE_NAME = "gtzbabc";  //
 
-    public static String destPath = "app/" + channel + "/release";
-    public static String FILENAME = destPath + "/app-" + channel + "-release";
+    public static String destPath = "app_dex/" + channel + "/release";
+    public static String FILENAME = destPath + "/app_dex-jiagu-release";
     // resGuard混淆后的包文件位置
 //    public static String resguardReleasePath = "app/build/outputs/apk/" + channel + "/release/AndResGuard_app-" + channel + "-release/app-" + channel + "-release_7zip_aligned_signed.apk";
 
@@ -25,8 +25,8 @@ public class Main_Dex {
          * 1、制作只包含解密代码的dex 文件
          */
         //1.1 解压aar 获得classes.jar
-        File aarFile = new File("Proxy_Guard_Core/build/outputs/aar/Proxy_Guard_Core-release.aar");
-        File aarTemp = new File("Proxy_Guard_Tools/temp");
+        File aarFile = new File("Proxy_Guard_Dex/build/outputs/aar/Proxy_Guard_Dex-release.aar");
+        File aarTemp = new File("Proxy_Guard_Tools/temp_dex");
         Zip.unZipApk(aarFile, aarTemp);
         File classesJar = new File(aarTemp, "classes.jar");
         //1.2 执行dx命令 将jar变成dex文件
@@ -44,7 +44,7 @@ public class Main_Dex {
          * 2、加密apk中所有dex文件
          */
         File apkFile = new File(FILENAME + ".apk");
-        File apkTemp = new File("app/build/outputs/apk/temp");
+        File apkTemp = new File("app_dex/build/outputs/apk/temp");
         Zip.unZipApk(apkFile, apkTemp);
         File[] dexFiles = apkTemp.listFiles(new FilenameFilter() {
             @Override
@@ -52,7 +52,7 @@ public class Main_Dex {
                 return s.endsWith(".dex");
             }
         });
-        File fileDexZip = new File("app/build/outputs/apk/temp/classes.zip");
+        File fileDexZip = new File("app_dex/build/outputs/apk/temp/classes.zip");
         Zip.zip(dexFiles, fileDexZip);
         for (File dex : dexFiles) {
             dex.delete();
@@ -70,13 +70,13 @@ public class Main_Dex {
          * 3、把classes.dex 放入 apk解压目录 在压缩成apk
          */
         classesDex.renameTo(new File(apkTemp, "classes.dex"));
-        File unSignedApk = new File("app/build/outputs/apk/app-unsigned.apk");
+        File unSignedApk = new File("app_dex/build/outputs/apk/app-unsigned.apk");
         Zip.zip(apkTemp, unSignedApk);
 
         /**
          * 4、对齐与签名
          */
-        File alignedApk = new File("app/build/outputs/apk/app-unsigned-aligned.apk");
+        File alignedApk = new File("app_dex/build/outputs/apk/app-unsigned-aligned.apk");
         process = Runtime.getRuntime().exec("cmd /c zipalign -f 4 " + unSignedApk
                 .getAbsolutePath() + " " +
                 alignedApk.getAbsolutePath());
@@ -91,7 +91,7 @@ public class Main_Dex {
 //        apksigner sign  --ks jks文件地址 --ks-key-alias 别名 --ks-pass pass:jsk密码 --key-pass
 // pass:别名密码 --out  out.apk in.apk
         File signedApk = new File(FILENAME + "-signed-aligned.apk");
-        File jks = new File("app/signature/" + SIGN_FINE_NAME + ".jks");
+        File jks = new File("app_dex/signature/" + SIGN_FINE_NAME + ".jks");
         process = Runtime.getRuntime().exec("cmd /c apksigner sign  --ks " + jks.getAbsolutePath
                 () + " --ks-key-alias yeyan --ks-pass pass:yeyan123 --key-pass  pass:yeyan123 --out" +
                 " " + signedApk.getAbsolutePath() + " " + unSignedApk.getAbsolutePath());

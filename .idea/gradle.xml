@@ -15,9 +15,11 @@
             <option value="$PROJECT_DIR$/Proxy_Guard_Dex" />
             <option value="$PROJECT_DIR$/Proxy_Guard_Resource" />
             <option value="$PROJECT_DIR$/Proxy_Guard_Tools" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/app_dex" />
+            <option value="$PROJECT_DIR$/app_res" />
           </set>
         </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
