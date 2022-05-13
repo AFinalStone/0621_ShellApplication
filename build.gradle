@@ -10,14 +10,6 @@ buildscript {
         mavenCentral()
         // 友盟sdk新maven仓库地址
         maven { url 'https://repo1.maven.org/maven2/' }
-        maven {
-//            url 'http://60.12.214.146:8880/repository/miyue-releases/'
-            url 'http://nex.yonrun.com:8880/repository/miyue-releases/'
-            credentials {
-                username 'admin'
-                password 'admin123'
-            }
-        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
@@ -40,15 +32,6 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url 'https://jitpack.io' }
         maven { url 'http://developer.huawei.com/repo/' }
-        //maven { url 'https://dl.bintray.com/albertlii/android-maven/' }
-        maven {
-//            url 'http://60.12.214.146:8880/repository/miyue-releases/'
-            url 'http://nex.yonrun.com:8880/repository/miyue-releases/'
-            credentials {
-                username 'admin'
-                password 'admin123'
-            }
-        }
         // 友盟sdk新maven仓库地址
         maven { url 'https://repo1.maven.org/maven2/' }
     }
