@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
-      <module name="Android0201_Plugin_ShellApplication.Proxy_Guard_Core" target="11" />
+      <module name="Android0201_Plugin_ShellApplication.Proxy_Guard_Dex" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

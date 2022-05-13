@@ -1,4 +1,4 @@
-package com.proxygtzbabc.core;
+package com.example.shellapplication;
 
 import android.app.ActivityManager;
 import android.app.Application;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author syl
  * @time 2021/12/24 11:14
  */
-public class ProxyApplication extends Application {
+public class ProxyApplicationDex extends Application {
 
     private String app_name;//应用名称
     private String app_package;//应用包名
@@ -70,19 +70,13 @@ public class ProxyApplication extends Application {
                     }
                 }
         }
-        //解密
-        for (File file : dexDir.listFiles()) {
-            dexFilesList.add(file);
-        }
         try {
+            //解密
+            for (File file : dexDir.listFiles()) {
+                dexFilesList.add(file);
+            }
             loadDex(dexFilesList, versionDir);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

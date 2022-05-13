@@ -5,7 +5,7 @@
 
 
     <application
-        android:name="com.example.shellapplication.ProxyApplication"
+        android:name="com.example.shellapplication.ProxyApplicationRes"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/App_Name"

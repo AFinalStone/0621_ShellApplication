@@ -25,7 +25,7 @@ public class Main_Dex {
          * 1、制作只包含解密代码的dex 文件
          */
         //1.1 解压aar 获得classes.jar
-        File aarFile = new File("Proxy_Guard_Dex/build/outputs/aar/Proxy_Guard_Dex-release.aar");
+        File aarFile = new File("Proxy_Guard_Core/build/outputs/aar/Proxy_Guard_Core-release.aar");
         File aarTemp = new File("Proxy_Guard_Tools/temp_dex");
         Zip.unZipApk(aarFile, aarTemp);
         File classesJar = new File(aarTemp, "classes.jar");

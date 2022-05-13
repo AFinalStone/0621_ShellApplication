@@ -12,7 +12,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Proxy_Guard_Dex" />
+            <option value="$PROJECT_DIR$/Proxy_Guard_Core" />
             <option value="$PROJECT_DIR$/Proxy_Guard_Resource" />
             <option value="$PROJECT_DIR$/Proxy_Guard_Tools" />
             <option value="$PROJECT_DIR$/app_dex" />
