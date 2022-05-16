@@ -5,7 +5,7 @@
 - dex文件的加密逻辑主要在Proxy_Guard_Tools模块的Main_Dex类中
 - dex文件的解密逻辑主要在Proxy_Guard_Core模块的ProxyApplicationDex类中
 
-![Dex文件加固的整个流程](picture/01_Dex文件加固的整个流程.png)
+![Dex文件加固的整个流程](pic/01_Dex文件加固的整个流程.png)
 
 ### 1.2 res文件的加密
 
