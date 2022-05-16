@@ -24,19 +24,31 @@
 
 ![APK文件的打包流程](pic/02_APK的打包流程.png)
 
+理解APK的打包流程，主要是为了让我们了解在反编译apk文件之后，如何重新对apk文件进行打包，签名和对齐。
+
 ### 1.2 Framework层Application的启动流程
 
 ![Application的启动流程](pic/03_Application的启动流程.png)
+
+理解Application的启动流程，主要是为了让我们明白：
+
+- 什么时候解密我们先前进行了加密的Dex和资源文件
+- 什么时候加载这些解密之后的Dex和资源文件
+- 什么时候使用我们真正的Application替换ProxyApplication对象
 
 ### 1.3 Dex文件结构解析
 
 ![Dex文件结构分析](pic/04_Dex文件结构分析.png)
 
+理解Dex的文件结构，主要是为了让我们明白如何伪造一个Dex对象来为App提供一个外壳和入口
+
 ### 1.4 Android中的类加载器
 
 ![Android中的类加载器](pic/05_Android中的类加载器.png)
 
-### 1.4 Dex文件的加载流程，ClassLoader类加载器的加载原理，如何让后
+理解Android中的类加载器，这样我们才能明白我们应用程序的类是被那个类加载器加载的，通过分析该类的源码，以达到动态加载Dex的可行方案。
+
+### 1.4 Dex文件的加载流程，ClassLoader类加载器的加载原理
 
 Dex文件默认是被PathClassLoader加载到内存中的，默认存储在PathClassLoader对象的DexFileList属性的Element数组中，
 在我们使用DexClassLoader加载我们经过加密解密之后的Dex文件，我们需要把通过反射获取这个Element数组，
@@ -45,7 +57,8 @@ Dex文件默认是被PathClassLoader加载到内存中的，默认存储在PathC
 ### 1.5 Resource.arsc文件结构解析
 
 ![Resouce.arsc文件结构](pic/06_Resouce.arsc文件结构.png)
-了解Resource.arsc的结构，主要是为了资源加密的时候伪造明文resouce.arsc文件
+
+理解Resource.arsc的结构，主要是为了我们在进行资源加密的时候伪造明文resouce.arsc文件
 
 ### 1.6 Res资源文件的加载流程，Resource和AssetManager的加载原理
 
