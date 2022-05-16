@@ -22,19 +22,19 @@
 
 ### 1.1 APK的打包，签名流程
 
-![APK文件的打包流程](pic/02_APK的打包流程.PNG)
+![APK文件的打包流程](pic/02_APK的打包流程.png)
 
 ### 1.2 Framework层Application的启动流程
 
-![Application的启动流程](pic/02_Application的启动流程.png)
+![Application的启动流程](pic/03_Application的启动流程.png)
 
 ### 1.3 Dex文件结构解析
 
-![Dex文件结构分析](pic/03Dex文件结构分析.PNG)
+![Dex文件结构分析](pic/04_Dex文件结构分析.png)
 
 ### 1.4 Android中的类加载器
 
-![Android中的类加载器](pic/05_Android中的类加载器.PNG)
+![Android中的类加载器](pic/05_Android中的类加载器.png)
 
 ### 1.4 Dex文件的加载流程，ClassLoader类加载器的加载原理，如何让后
 
