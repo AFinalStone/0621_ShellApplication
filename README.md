@@ -7,7 +7,7 @@
 
 ![Dex加固的方案](picture/01_加固的方案.png)
 
-![Dex加固的总体框架](picture/02_加固的总体框架.png)
+![Dex加固的总体框架](picture/02_加固的整个流程.png)
 
 ### 1.2 res文件的加密
 
